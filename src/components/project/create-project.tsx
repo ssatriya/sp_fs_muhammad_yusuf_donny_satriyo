@@ -11,7 +11,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -48,14 +47,14 @@ const CreateProject = () => {
   >({
     mutationKey: ["create-project"],
     mutationFn: (payload: CreateProjectSchema) => createProject(payload),
+    onError: (error) => {
+      toast.error(error.message || "Something went wrong. Try again later.");
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["project-list"] });
       toast.success(data.message);
       closeCreateProjectModal();
       form.reset();
-    },
-    onError: (error) => {
-      toast.error(error.message || "Something went wrong. Try again later.");
     },
   });
 
