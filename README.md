@@ -15,7 +15,7 @@ Aplikasi manajemen tugas kolaboratif / Collaborative task management application
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/username/repo-name.git
+git clone https://github.com/ssatriya/sp_fs_muhammad_yusuf_donny_satriyo.git
 cd repo-name
 
 # 2. Install dependencies
