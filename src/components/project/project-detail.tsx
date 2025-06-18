@@ -9,13 +9,14 @@ import CreateTask from "@/components/task/create-task";
 import Link from "next/link";
 import ProjectKanban from "@/components/project/project-kanban";
 import EditTask from "@/components/task/edit-task";
+import { useModalStore } from "@/store/modal-store";
 
 type Props = {
   initialProject: Project;
 };
 
 const ProjectDetail = ({ initialProject }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { openCreateTaskModal } = useModalStore();
 
   return (
     <div className="flex flex-col">
@@ -29,7 +30,7 @@ const ProjectDetail = ({ initialProject }: Props) => {
           </p>
         </div>
         <div className="flex gap-4">
-          <Button onClick={() => setIsOpen(true)}>
+          <Button onClick={openCreateTaskModal}>
             <Plus /> Add Task
           </Button>
           <Button variant="outline" asChild>
@@ -40,11 +41,7 @@ const ProjectDetail = ({ initialProject }: Props) => {
         </div>
       </div>
       <ProjectKanban projectId={initialProject.id} />
-      <CreateTask
-        projectId={initialProject.id}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-      />
+      <CreateTask projectId={initialProject.id} />
       <EditTask />
     </div>
   );

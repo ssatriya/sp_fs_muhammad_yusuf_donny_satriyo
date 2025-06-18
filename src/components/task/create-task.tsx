@@ -35,15 +35,15 @@ import { Button } from "@/components/ui/button";
 import { CreateTaskSchema, createTaskSchema } from "@/schema/zod";
 import { ReactAsyncSelect } from "@/components/react-select";
 import { TaskStatus } from "../../../generated/prisma";
+import { useModalStore } from "@/store/modal-store";
 
 type Props = {
   projectId: string;
-  isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-const CreateTask = ({ projectId, isOpen, setIsOpen }: Props) => {
+const CreateTask = ({ projectId }: Props) => {
   const queryClient = useQueryClient();
+  const { isCreateTaskModalOpen, closeCreateTaskModal } = useModalStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [selected, setSelected] = useState<{
     value: string;
@@ -72,8 +72,10 @@ const CreateTask = ({ projectId, isOpen, setIsOpen }: Props) => {
     },
     onSuccess: (data) => {
       toast.success(data.message);
-      setIsOpen(false);
+      closeCreateTaskModal();
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      form.reset();
+      setSelected(null);
     },
   });
 
@@ -82,7 +84,12 @@ const CreateTask = ({ projectId, isOpen, setIsOpen }: Props) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isCreateTaskModalOpen}
+      onOpenChange={(open) => {
+        if (!open) closeCreateTaskModal();
+      }}
+    >
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Create New Task</DialogTitle>
@@ -190,7 +197,7 @@ const CreateTask = ({ projectId, isOpen, setIsOpen }: Props) => {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setIsOpen(false)}
+                onClick={closeCreateTaskModal}
               >
                 Cancel
               </Button>
