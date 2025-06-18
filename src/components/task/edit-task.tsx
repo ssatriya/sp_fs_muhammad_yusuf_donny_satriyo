@@ -237,7 +237,7 @@ const EditTask = () => {
                 Cancel
               </Button>
               <Button type="submit" disabled={isPending}>
-                Create Task
+                Update Task
               </Button>
             </div>
           </form>
