@@ -117,3 +117,4 @@ Isi semua field :
 Known Issue
 
 - User can send invitation to their own account
+- Drag n Drop flicker at previous position when dropped
