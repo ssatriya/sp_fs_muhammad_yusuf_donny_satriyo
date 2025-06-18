@@ -6,12 +6,31 @@ import { Button } from "@/components/ui/button";
 import SettingHeading from "@/components/setting-heading";
 import InviteMember from "@/components/project/invite-member";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteProjectById } from "@/lib/api";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type Props = {
   projectId: string;
 };
 
 const ProjectSettings = ({ projectId }: Props) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteProject } = useMutation({
+    mutationFn: async (id: string) => deleteProjectById(projectId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-list"] });
+      toast.success("Project and all its tasks deleted successfully");
+      router.replace("/projects");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete project");
+    },
+  });
+
   return (
     <div>
       <div className="mb-8 space-y-0.5">
@@ -49,7 +68,12 @@ const ProjectSettings = ({ projectId }: Props) => {
                 title="Delete Project"
                 description="Delete current project will also remove its task and invited member"
               />
-              <Button variant="destructive">Delete Project</Button>
+              <Button
+                variant="destructive"
+                onClick={() => deleteProject(projectId)}
+              >
+                Delete Project
+              </Button>
             </TabsContent>
           </div>
         </Tabs>
