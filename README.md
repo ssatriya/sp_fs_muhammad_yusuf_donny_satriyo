@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Management App
 
-## Getting Started
+Aplikasi manajemen tugas kolaboratif / Collaborative task management application  
+**Fitur**: Kanban board, invitation system, role-based permissions
 
-First, run the development server:
+## 📥 Instalasi | Installation
+
+### Prasyarat | Prerequisites
+
+- Node.js (v18+)
+- PostgreSQL
+- Git
+
+### Langkah-langkah | Steps
 
 ```bash
+# 1. Clone repository
+git clone https://github.com/username/repo-name.git
+cd repo-name
+
+# 2. Install dependencies
+npm install
+
+# 3. Setup environment
+cp .env.example .env
+
+# 4. Setup database
+npx prisma migrate dev --name init
+npx prisma db push
+npx prisma generate
+
+# 5. Jalankan aplikasi
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# 🚀 Panduan Penggunaan
+
+## 1. Autentikasi
+
+- **Daftar / Register**: `/register`
+  Buat akun baru
+
+- **Masuk / Login**: `/login`
+  Akses sistem
+
+---
+
+## 2. Manajemen Proyek
+
+### Buat Proyek Baru
+
+1. Buka menu **Projects**
+2. Klik **New Project**
+3. Isi formulir
+
+### Lihat Detail
+
+Di tabel proyek
+
+
+---
+
+## 3. Undang Kolaborator
+
+1. Buka **Project Settings**
+2. Cari user
+3. Klik **Send Invitation**
+
+User akan menerima notifikasi
+Ikon 🔔 (bell) pojok kanan
+Bisa menerima / menolak
+
+---
+
+## 4. Manajemen Tugas
+
+### Buat Tugas
+
+Di halaman detail proyek:
+
+Isi semua field :
+
+- **Judul**
+- **Deskripsi**
+- **Status** (Todo / In Progress / Done)
+- **Assignee** (user yang ditugaskan)
+
+### Ubah Status | Update Status
+
+- Cara: **Drag & drop** di **Kanban board**
+- Hanya: **Owner** dan **assigned user** yang bisa mengubah | can update
+
+---
+
+## 🔐 Sistem Keamanan
+
+| Fitur             | Akses            |
+|------------------|----------------------------|
+| Edit Task        | Owner + Assigned User      |
+| Hapus Task       | Owner only                 |
+| Undang Anggota   | Owner                      |
+| Hapus Proyek     | Owner only                 |
+
+---
+
+## 🛠 Teknologi | Technologies
+
+### Frontend:
+- Next.js 14
+- Shadcn/ui + Tailwind CSS
+- Zustand (state management)
+
+### Backend:
+- Next.js API Routes
+- PostgreSQL
+- Prisma ORM
+- Better Auth
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

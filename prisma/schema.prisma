@@ -1,0 +1,172 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id            String     @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Sessions[]
+  accounts      Accounts[]
+
+  ownedProjects Projects[]    @relation("ProjectOwner")
+  memberships   Memberships[]
+  assignedTasks Tasks[]       @relation("TaskAssignee")
+
+  // Invitations this user has received
+  receivedInvitations Invitations[] @relation("ReceivedInvitations")
+
+  // Invitations this user has sent
+  sentInvitations Invitations[] @relation("SentInvitations")
+
+  @@unique([email])
+  @@index([email])
+  @@map("users")
+}
+
+model Sessions {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("sessions")
+}
+
+model Accounts {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  Users     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("accounts")
+}
+
+model Verifications {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verifications")
+}
+
+model Projects {
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(100)
+  description String   @db.Text
+  ownerId     String
+  owner       Users    @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  memberships Memberships[]
+  tasks       Tasks[]
+  Invitations Invitations[]
+
+  @@map("projects")
+}
+
+model Memberships {
+  id        String     @id @default(cuid())
+  userId    String
+  projectId String
+  role      MemberRole @default(MEMBER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  user    Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+  @@map("memberships")
+}
+
+model Tasks {
+  id          String     @id @default(cuid())
+  title       String     @db.VarChar(200)
+  description String?    @db.Text
+  status      TaskStatus @default(TODO)
+  projectId   String
+  assignedId  String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  project  Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee Users?   @relation("TaskAssignee", fields: [assignedId], references: [id], onDelete: SetNull)
+
+  @@map("tasks")
+}
+
+model Invitations {
+  id            String           @id @default(cuid())
+  invitedUserId String
+  inviterId     String
+  projectId     String
+  status        InvitationStatus @default(PENDING)
+  expiresAt     DateTime
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  project     Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  inviter     Users    @relation("SentInvitations", fields: [inviterId], references: [id], onDelete: Cascade)
+  invitedUser Users    @relation("ReceivedInvitations", fields: [invitedUserId], references: [id], onDelete: Cascade)
+
+  @@unique([invitedUserId, projectId])
+  @@index([invitedUserId])
+  @@index([inviterId])
+  @@map("invitations")
+}
+
+enum TaskStatus {
+  TODO        @map("todo")
+  IN_PROGRESS @map("in-progress")
+  DONE        @map("done")
+}
+
+enum InvitationStatus {
+  PENDING  @map("pending")
+  ACCEPTED @map("accepted")
+  DECLINED @map("declined")
+  EXPIRED  @map("expired")
+}
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
