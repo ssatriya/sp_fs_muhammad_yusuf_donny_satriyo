@@ -113,3 +113,7 @@ Isi semua field :
 - Prisma ORM
 - Better Auth
 ```
+
+Known Issue
+
+- User can send invitation to their own account

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -51,6 +52,10 @@ export default function Home() {
           </a>
         </div>
       </main>
+      <div className="flex flex-col gap-5">
+        <Link href="/login">Login</Link>
+        <Link href="/register">Register</Link>
+      </div>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
