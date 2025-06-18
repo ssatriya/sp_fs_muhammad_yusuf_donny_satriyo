@@ -52,6 +52,7 @@ export async function POST(
         title: data.title,
         description: data.description,
         assignedId: data.assigneeId,
+        status: data.status,
         projectId: id,
       },
     });

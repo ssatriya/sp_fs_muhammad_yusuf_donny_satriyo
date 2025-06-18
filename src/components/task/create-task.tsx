@@ -136,11 +136,11 @@ const CreateTask = ({ projectId, isOpen, setIsOpen }: Props) => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="todo">TODO</SelectItem>
-                          <SelectItem value="in-progress">
+                          <SelectItem value={TaskStatus.TODO}>TODO</SelectItem>
+                          <SelectItem value={TaskStatus.IN_PROGRESS}>
                             IN PROGRESS
                           </SelectItem>
-                          <SelectItem value="done">DONE</SelectItem>
+                          <SelectItem value={TaskStatus.DONE}>DONE</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>

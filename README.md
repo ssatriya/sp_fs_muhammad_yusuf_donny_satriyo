@@ -26,8 +26,6 @@ cp .env.example .env
 
 # 4. Setup database
 npx prisma migrate dev --name init
-npx prisma db push
-npx prisma generate
 
 # 5. Jalankan aplikasi
 npm run dev
