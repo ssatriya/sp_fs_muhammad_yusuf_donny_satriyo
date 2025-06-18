@@ -21,7 +21,7 @@ export async function PATCH(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return Response.json(
